@@ -2,8 +2,8 @@
 FROM nginx:alpine
 
 # Copiamos los archivos de la página web al directorio de Nginx
-COPY index.html /usr/share/nginx/html/index.html
-COPY styles.css /usr/share/nginx/html/styles.css
+COPY ./index.html /usr/share/nginx/html/index.html
+COPY ./styles.css /usr/share/nginx/html/styles.css
 
 # Exponemos el puerto 80 (puerto por defecto de Nginx)
 EXPOSE 80

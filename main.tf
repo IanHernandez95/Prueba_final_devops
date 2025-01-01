@@ -1,17 +1,23 @@
-provider "aws" {
-  region = "us-east-1"
-  profile = "ihfterra"
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
 }
 
 terraform {
-  backend "s3" {
-    bucket = "ihf-terraform-state"
-    key    = "terraform-state"
-    region = "us-east-1"
-    dynamodb_table = "ihf-terraform-state-lock"
-    encrypt = true
-    profile = "ihfterra"
+  backend "remote" {
+    organization = "curso-devops-ihf"
+    workspaces {
+      name = "ws-pruebafinal"
+    }
   }
+}
+
+provider "aws" {
+  region = "us-east-1"
 }
 
 module "ecr" {
