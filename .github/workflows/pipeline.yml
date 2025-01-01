@@ -34,17 +34,19 @@ jobs:
     - name: Terraform Init
       run: terraform init
       env:
-        TF_TOKEN: ${{ secrets.TERRAFORM_TOKEN }}
+        TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_TOKEN }}
 
     - name: Terraform Plan
       run: terraform plan
       env:
-        TF_TOKEN: ${{ secrets.TERRAFORM_TOKEN }}
+        TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_TOKEN }}
+
 
     - name: Terraform Apply
       run: terraform apply -auto-approve
       env:
-        TF_TOKEN: ${{ secrets.TERRAFORM_TOKEN }}
+        TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_TOKEN }}
+
 
     - name: Build Docker image
       run: docker build -f paginaweb-static -t ${{ secrets.AWS_USER_ID }}.dkr.ecr.${{ vars.AWS_REGION}}.amazonaws.aws/pruebafinal ./paginaweb-static
