@@ -52,4 +52,4 @@ jobs:
       run: docker build -f paginaweb-static/Dockerfile -t ${{ secrets.AWS_USER_ID }}.dkr.ecr.${{ vars.AWS_REGION}}.amazonaws.aws/pruebafinal ./paginaweb-static
 
     - name: Push Docker image
-      run: docker push ${{ secrets.AWS_USER_ID }}.dkr.ecr.${{ vars.AWS_REGION}}.amazonaws.aws/pruebafinal
+      run: docker push ${{ secrets.AWS_USER_ID }}.dkr.ecr.${{ vars.AWS_REGION}}.amazonaws.aws/sitioweb-static
