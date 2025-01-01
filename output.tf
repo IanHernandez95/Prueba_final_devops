@@ -1,4 +1,3 @@
-output "name" {
-  value = module.ecr.repository_name
-  
-}
+# output "name" {
+#  value = module.ecr.repository_name
+# } 
