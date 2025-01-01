@@ -8,25 +8,12 @@ on:
       - main
 
 jobs:
-  build:
+  terraform:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v3
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ vars.AWS_REGION }}
-
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v2
-      with:
-        mask-password: 'false'
 
     - name: Terraform Setup
       uses: hashicorp/setup-terraform@v2
@@ -41,15 +28,41 @@ jobs:
       env:
         TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_TOKEN }}
 
-
     - name: Terraform Apply
       run: terraform apply -auto-approve
       env:
         TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_TOKEN }}
 
+    - name: Set ECR repository URL
+      run: echo "ECR_URL=$(terraform output -raw ecr_repository_url)" >> $GITHUB_ENV
 
-    - name: Build Docker image
-      run: docker build -f paginaweb-static/Dockerfile -t ${{ secrets.AWS_USER_ID }}.dkr.ecr.${{ vars.AWS_REGION}}.amazonaws.aws/sitioweb-static ./paginaweb-static
+  build-push:
+    needs: terraform
+    runs-on: ubuntu-latest
 
-    - name: Push Docker image
-      run: docker push ${{ secrets.AWS_USER_ID }}.dkr.ecr.${{ vars.AWS_REGION}}.amazonaws.aws/sitioweb-static
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          mask-password: 'false'
+
+      
+      - name: Build Docker image
+        run: docker build -f paginaweb-static/Dockerfile -t pruebafinal ./paginaweb-static
+
+      - name: Tag Docker image
+        run: docker tag pruebafinal:latest ${{ env.ECR_URL }}/pruebafinal:latest
+
+      - name: Push Docker image to Amazon ECR
+        run: docker push ${{ env.ECR_URL }}/pruebafinal:latest
