@@ -37,16 +37,12 @@ jobs:
     - name: Terraform Plan
       run: terraform plan
       env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: ${{ vars.AWS_REGION }}
+        TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_TOKEN }}
 
     - name: Terraform Apply
       run: terraform apply -auto-approve
       env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: ${{ vars.AWS_REGION }}
+        TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_TOKEN }}
 
     - name: Build Docker image
       run: docker build -f paginaweb-static -t ${{ secrets.AWS_USER_ID }}.dkr.ecr.${{ vars.AWS_REGION}}.amazonaws.aws/pruebafinal ./paginaweb-static
