@@ -10,6 +10,8 @@ module "ec2" {
   vpc_security_group_ids = var.security_group_ids
   key_name = var.key_name
 
+  associate_public_ip_address = true
+
   tags = {
     Terraform = "true"
     Environment = "dev"

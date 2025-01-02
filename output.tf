@@ -19,8 +19,8 @@ output "instance_id" {
   description = "The ID of the EC2 instance" 
 }
 
-output "InstaceIP" {
-  value = module.ec2.InstaceIP
+output "InstanceIP" {
+  value = module.ec2.InstanceIP
 }
 
 output "sns_arn" {

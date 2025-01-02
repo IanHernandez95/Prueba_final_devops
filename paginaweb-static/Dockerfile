@@ -5,6 +5,10 @@ FROM nginx:alpine
 COPY ./index.html /usr/share/nginx/html/index.html
 COPY ./styles.css /usr/share/nginx/html/styles.css
 
+# Actualizar curl a la versión 8.11.1-r0
+RUN apk update && apk add curl=8.11.1-r0
+
+
 # Exponemos el puerto 80 (puerto por defecto de Nginx)
 EXPOSE 80
 

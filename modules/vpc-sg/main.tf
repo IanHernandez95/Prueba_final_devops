@@ -10,6 +10,8 @@ module "vpc" {
 
   enable_nat_gateway = false
 
+  database_subnet_names = ["prueba-final-subnet"]
+
   tags = {
     Terraform   = "true"
     Environment = "dev"

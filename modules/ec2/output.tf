@@ -2,6 +2,6 @@ output "InstanceId" {
   value = module.ec2.id
 }
 
-output "InstaceIP" {
+output "InstanceIP" {
   value = module.ec2.public_ip
 }
