@@ -38,7 +38,7 @@ jobs:
     - name: Get ECR Repository URL
       id: ecr_url
       run: |
-        URL=$(terraform output -raw ecr_repository_url | grep -Eo '^[^:]+')
+        URL=$(terraform output -raw ecr_repository_url | sed 's|^.*: ||')
         echo "ECR_URL=${URL}" >> $GITHUB_ENV
         echo $URL
       env:
