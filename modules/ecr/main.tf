@@ -3,6 +3,7 @@ module "ecr" {
 
   repository_name = "sitioweb-static"
   repository_force_delete = true
+  repository_image_tag_mutability = "MUTABLE"
 
   repository_lifecycle_policy = jsonencode({
     rules = [
