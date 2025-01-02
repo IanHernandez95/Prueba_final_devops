@@ -25,6 +25,8 @@ jobs:
   terraform-build:
     needs: snyk-scan
     runs-on: ubuntu-latest
+    env:
+        TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_TOKEN }}
 
     steps:
     - name: Checkout repository
@@ -35,18 +37,13 @@ jobs:
 
     - name: Terraform Init
       run: terraform init
-      env:
-        TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_TOKEN }}
+      
 
     - name: Terraform Plan
       run: terraform plan
-      env:
-        TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_TOKEN }}
 
     - name: Terraform Apply
       run: terraform apply -auto-approve
-      env:
-        TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_TOKEN }}
     
     - name: Get EC2 IP address
       id: ec2_ip
