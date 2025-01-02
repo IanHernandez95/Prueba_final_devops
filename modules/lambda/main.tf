@@ -8,6 +8,10 @@ resource "aws_lambda_function" "lambda_prueba_final" {
 
   role = var.rol_sqs_arn
 
+  tracing_config {
+    mode = "PassThrough"
+  }
+
   environment {
     variables = {
       SNS_TOPIC_ARN = var.SNS_TOPIC_ARN
