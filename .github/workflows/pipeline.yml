@@ -6,8 +6,6 @@ on:
   pull_request:
     branches:
       - main
-    paths-ignore:
-      - 'README.md'
 
 jobs:
   terraform:
@@ -35,11 +33,8 @@ jobs:
       env:
         TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_TOKEN }}
 
-    - name: Set ECR repository URL
-      id: ecr_url
-      run: |
-        URL=$(terraform output -raw ecr_repository_url)
-        echo "ECR_URL=${URL}" >> $GITHUB_ENV
+    - name: Set ECR repository URL as environment variable
+      run: echo "ECR_URL=$(terraform output -raw ecr_repository_url)" >> $GITHUB_ENV
 
   build-push:
     needs: terraform
