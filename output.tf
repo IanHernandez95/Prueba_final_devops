@@ -20,7 +20,7 @@ output "instance_id" {
 }
 
 output "InstaceIP" {
-  value = module.ec2.public_ip
+  value = module.ec2.InstaceIP
 }
 
 output "sns_arn" {
