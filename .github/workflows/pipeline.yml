@@ -48,7 +48,7 @@ jobs:
     - name: Get EC2 IP address
       id: ec2_ip
       run: |
-        instance_ip=$(terraform output -raw InstanceIP | sed 's/::debug::.*//)
+        instance_ip=$(terraform output -raw InstanceIP | sed 's/::debug::.*//')
         echo "$instance_ip" > ec2_ip.txt
 
     - name: Upload EC2 IP as artifact
