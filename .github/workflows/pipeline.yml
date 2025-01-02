@@ -35,23 +35,6 @@ jobs:
       env:
         TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_TOKEN }}
 
-    - name: Get ECR Repository URL
-      id: ecr_url
-      run: |
-        # Captura solo la URL limpia, sin el comando de Terraform
-        URL=$(terraform output -raw ecr_repository_url | sed 's|^.*: ||')
-        echo "DEBUG: ECR_URL=${URL}" # Depuración para verificar que solo la URL es capturada
-        if [[ -z "$URL" ]]; then
-          echo "ERROR: Unable to retrieve ECR URL."
-          exit 1
-        fi
-        echo "ECR_URL=${URL}" >> $GITHUB_ENV
-      env:
-        TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_TOKEN }}
-
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v3
       with:
@@ -69,7 +52,7 @@ jobs:
       run: docker build -f paginaweb-static/Dockerfile -t pruebafinal ./paginaweb-static
 
     - name: Tag Docker image
-      run: docker tag pruebafinal:latest ${{ env.ECR_URL }}/pruebafinal:latest
+      run: docker tag pruebafinal:latest ${{ secrets.AWS_USER_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/sitioweb-static/pruebafinal:latest
 
     - name: Push Docker image to Amazon ECR
-      run: docker push ${{ env.ECR_URL }}/pruebafinal:latest
+      run: docker push ${{ secrets.AWS_USER_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/sitioweb-static/pruebafinal:latest
