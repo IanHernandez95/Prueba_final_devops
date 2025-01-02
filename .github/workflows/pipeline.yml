@@ -37,6 +37,8 @@ jobs:
 
     - name: Debug Terraform Output
       run: terraform output ecr_repository_url
+      env:
+        TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_TOKEN }}
 
     - name: Get ECR Repository URL
       id: ecr_url
