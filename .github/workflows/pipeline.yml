@@ -38,9 +38,14 @@ jobs:
     - name: Get ECR Repository URL
       id: ecr_url
       run: |
+        # Captura solo la URL limpia, sin el comando de Terraform
         URL=$(terraform output -raw ecr_repository_url | sed 's|^.*: ||')
+        echo "DEBUG: ECR_URL=${URL}" # Depuración para verificar que solo la URL es capturada
+        if [[ -z "$URL" ]]; then
+          echo "ERROR: Unable to retrieve ECR URL."
+          exit 1
+        fi
         echo "ECR_URL=${URL}" >> $GITHUB_ENV
-        echo $URL
       env:
         TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_TOKEN }}
 
