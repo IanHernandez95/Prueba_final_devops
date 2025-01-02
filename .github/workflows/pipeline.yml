@@ -52,7 +52,6 @@ jobs:
     needs: terraform-build
     runs-on: ubuntu-latest
 
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -73,8 +72,44 @@ jobs:
       - name: Build Docker image
         run: docker build -f paginaweb-static/Dockerfile -t pruebafinal ./paginaweb-static
 
+      - name: Run Snyk to check Docker image
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }} 
+        with:
+          image: pruebafinal:latest
+
       - name: Tag Docker image
         run: docker tag pruebafinal:latest ${{ secrets.AWS_USER_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/sitioweb-static:latest
 
       - name: Push Docker image to Amazon ECR
         run: docker push ${{ secrets.AWS_USER_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/sitioweb-static:latest
+
+  deploy-api-ec2:
+    needs:  terraform-build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up SSH keys
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_SECRET_KEY }}
+
+      - name: Get EC2 IP address
+        id: ec2_ip
+        run: echo "::set-output name=ip::$(terraform output -raw ec2_public_ip)"
+      
+      - name: Copy app to EC2
+        run: |
+          scp -i /tmp/ssh-key -o StrictHostKeyChecking=no -r api/src ubuntu@${{ steps.ec2_ip.outputs.ip }}:/home/ubuntu/app
+  
+      - name: SSH into EC2 and start the app
+        run: |
+          ssh -i /tmp/ssh-key -o StrictHostKeyChecking=no ubuntu@${{ steps.ec2_ip.outputs.ip }} << EOF
+            cd /home/ubuntu/app
+            npm install
+            nohup node app.js &
+          EOF
