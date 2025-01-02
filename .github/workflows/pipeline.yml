@@ -100,15 +100,18 @@ jobs:
 
       - name: Get EC2 IP address
         id: ec2_ip
-        run: echo "::set-output name=ip::$(terraform output -raw ec2_public_ip)"
+        run: |
+          instance_ip=$(terraform output -raw InstanceIP)
+          echo "PUBLIC_IP=$instance_ip" >> $GITHUB_ENV
+
       
       - name: Copy app to EC2
         run: |
-          scp -i /tmp/ssh-key -o StrictHostKeyChecking=no -r api/src ubuntu@${{ steps.ec2_ip.outputs.ip }}:/home/ubuntu/app
+          scp -i /tmp/ssh-key -o StrictHostKeyChecking=no -r api/src ubuntu@$PUBLIC_IP:/home/ubuntu/app
   
       - name: SSH into EC2 and start the app
         run: |
-          ssh -i /tmp/ssh-key -o StrictHostKeyChecking=no ubuntu@${{ steps.ec2_ip.outputs.ip }} << EOF
+          ssh -i /tmp/ssh-key -o StrictHostKeyChecking=no ubuntu@$PUBLIC_IP << EOF
             cd /home/ubuntu/app
             npm install
             nohup node app.js &
