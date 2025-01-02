@@ -17,11 +17,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Autenticacion snyk
-        run: snyk auth ${{ secrets.SNYK_TOKEN }}
-
-      - name: Snyk test terraform
-        run: snyk iac test terraform
+      - name: Check terraform files
+        uses: snyk/actions/iac@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
   terraform-build:
     needs: snyk-scan
