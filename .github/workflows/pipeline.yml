@@ -24,6 +24,7 @@ jobs:
         run: snyk iac test terraform
 
   terraform-build:
+    needs: snyk-scan
     runs-on: ubuntu-latest
 
     steps:
@@ -49,7 +50,9 @@ jobs:
         TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_TOKEN }}
 
   docker-build:
+    needs: terraform-build
     runs-on: ubuntu-latest
+
 
     steps:
       - name: Checkout repository
