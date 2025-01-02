@@ -57,6 +57,9 @@ jobs:
         name: ec2-ip
         path: ec2_ip.txt
 
+    - name: Debug EC2 IP content
+      run: cat ec2_ip.txt
+
   docker-build:
     needs: terraform-build
     runs-on: ubuntu-latest
