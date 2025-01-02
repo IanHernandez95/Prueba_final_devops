@@ -52,7 +52,7 @@ jobs:
       run: docker build -f paginaweb-static/Dockerfile -t pruebafinal ./paginaweb-static
 
     - name: Tag Docker image
-      run: docker tag pruebafinal:latest ${{ secrets.AWS_USER_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/sitioweb-static/pruebafinal:latest
+      run: docker tag pruebafinal:latest ${{ secrets.AWS_USER_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/sitioweb-static:latest
 
     - name: Push Docker image to Amazon ECR
-      run: docker push ${{ secrets.AWS_USER_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/sitioweb-static/pruebafinal:latest
+      run: docker push ${{ secrets.AWS_USER_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/sitioweb-static:latest
