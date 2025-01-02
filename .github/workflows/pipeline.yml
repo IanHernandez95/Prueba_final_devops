@@ -35,21 +35,13 @@ jobs:
       env:
         TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_TOKEN }}
 
-    - name: Debug Terraform Output
-      run: terraform output ecr_repository_url
-      env:
-        TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_TOKEN }}
-
     - name: Get ECR Repository URL
       id: ecr_url
       run: |
-        URL=$(terraform output -raw ecr_repository_url || echo "ERROR")
-        echo "DEBUG: ECR_URL=${URL}" # Esto muestra el valor para depuración
-        if [ "${URL}" == "ERROR" ]; then
-          echo "Failed to fetch ECR URL"
-          exit 1
-        fi
+        URL=$(terraform output -raw ecr_repository_url)
         echo "ECR_URL=${URL}" >> $GITHUB_ENV
+      env:
+        TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_TOKEN }}
     
     - name: Terraform State Debug
       run: terraform state show module.ecr
