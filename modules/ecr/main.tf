@@ -2,6 +2,7 @@ module "ecr" {
   source = "terraform-aws-modules/ecr/aws"
 
   repository_name = "sitioweb-static"
+  repository_force_delete = true
 
   repository_lifecycle_policy = jsonencode({
     rules = [
