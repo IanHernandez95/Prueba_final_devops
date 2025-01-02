@@ -47,6 +47,18 @@ jobs:
       run: terraform apply -auto-approve
       env:
         TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_TOKEN }}
+    
+    - name: Get EC2 IP address
+      id: ec2_ip
+      run: |
+        instance_ip=$(terraform output -raw InstanceIP)
+        echo "$instance_ip" > ec2_ip.txt
+
+    - name: Upload EC2 IP as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ec2-ip
+        path: ec2_ip.txt
 
   docker-build:
     needs: terraform-build
@@ -98,12 +110,16 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_SECRET_KEY }}
 
-      - name: Get EC2 IP address
-        id: ec2_ip
+      - name: Download EC2 IP artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ec2-ip
+  
+      - name: Read EC2 IP from file
+        id: read_ip
         run: |
-          instance_ip=$(terraform output -raw InstanceIP)
+          instance_ip=$(cat ec2_ip.txt)
           echo "PUBLIC_IP=$instance_ip" >> $GITHUB_ENV
-
       
       - name: Copy app to EC2
         run: |
