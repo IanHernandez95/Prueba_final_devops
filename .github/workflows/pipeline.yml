@@ -57,9 +57,6 @@ jobs:
         name: ec2-ip
         path: ec2_ip.txt
 
-    - name: Debug EC2 IP content
-      run: cat ec2_ip.txt
-
   docker-build:
     needs: terraform-build
     runs-on: ubuntu-latest
@@ -119,9 +116,7 @@ jobs:
         id: read_ip
         run: |
           echo "PUBLIC_IP=$(cat ec2_ip.txt)" >> $GITHUB_ENV
-
-      - name: Print env
-        run: printenv
+          printenv
       
       - name: Copy app to EC2
         run: |
