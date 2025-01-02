@@ -40,7 +40,7 @@ jobs:
       run: |
         URL=$(terraform output -raw ecr_repository_url | grep -Eo '^[^:]+')
         echo "ECR_URL=${URL}" >> $GITHUB_ENV
-        echo "URL Captured: $URL" # Debug para verificar la salida
+        echo $URL
       env:
         TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_TOKEN }}
 
