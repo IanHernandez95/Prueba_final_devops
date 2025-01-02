@@ -38,14 +38,11 @@ jobs:
     - name: Get ECR Repository URL
       id: ecr_url
       run: |
-        URL=$(terraform output -raw ecr_repository_url)
+        URL=$(terraform output -raw ecr_repository_url | grep -Eo '^[^:]+')
         echo "ECR_URL=${URL}" >> $GITHUB_ENV
+        echo "URL Captured: $URL" # Debug para verificar la salida
       env:
         TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_TOKEN }}
-    
-    - name: Terraform State Debug
-      run: terraform state show module.ecr
-      
 
     - name: Checkout repository
       uses: actions/checkout@v2
