@@ -32,31 +32,12 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Generate SSH key
-      run: |
-        ssh-keygen -t rsa -b 4096 -C "github-actions" -N "" -f id_rsa
-        echo "Clave pública generada:"
-        cat id_rsa.pub
-      # Guarda la clave pública y privada como artifacts
-    - name: Save SSH keys as artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: ssh-keys
-        path: |
-          id_rsa
-          id_rsa.pub
-
-    - name: Export SSH public key to Terraform
-      run: |
-        echo "" >> terraform.tfvars # Asegúrate de añadir una línea vacía al final
-        echo 'public_key = "\"$(cat id_rsa.pub | tr -d '\n')\""' >> terraform.tfvars
-        
-
     - name: Terraform Setup
       uses: hashicorp/setup-terraform@v2
 
     - name: Terraform Init
       run: terraform init
+      
 
     - name: Terraform Plan
       run: terraform plan
@@ -64,9 +45,15 @@ jobs:
     - name: Terraform Apply
       run: terraform apply -auto-approve
     
-    - name: Save EC2 Public IP
-      run: |
-        echo "ec2_public_ip=$(terraform output -raw ec2_public_ip)" >> $GITHUB_ENV
+    - name: Terraform Outputs
+      id: outputs
+      run: terraform output -raw InstanceIP > ec2_ip.txt
+
+    - name: Upload Terraform Outputs as Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ec2_ip
+        path: ec2_ip.txt
 
 #
 #  docker-build:
@@ -114,19 +101,15 @@ jobs:
       - name: checkout repository
         uses: actions/checkout@v2
 
-      - name: Download SSH keys
-        uses: actions/download-artifact@v3
+      - name: Set up SSH key for EC2 access
+        run: |
+          echo "${{ secrets.SSH_SECRET_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+
+      - name: Download Terraform Outputs Artifact
+        uses: actions/download-artifact@v2
         with:
-          name: ssh-keys
-          path: ./
+          name: ec2_ip
 
-      - name: Add SSH key to agent
-        run: |
-          chmod 600 id_rsa
-          mkdir -p ~/.ssh
-          mv id_rsa ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ env.ec2_public_ip }} >> ~/.ssh/known_hosts
-
-      - name: Connect to EC2 instance
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@${{ env.ec2_public_ip }} "echo '¡Conexión exitosa desde GitHub Actions!'"
+      - name: Test Conection
+        run: ssh -i private_key.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@$(cat ec2_ip.txt) "echo 'Connection successful'"
