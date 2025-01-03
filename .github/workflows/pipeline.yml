@@ -54,6 +54,9 @@ jobs:
       with:
         name: terraform-outputs
         path: terraform_outputs.json
+
+    - name: tf algo
+      run: jq -r '.InstanceIP.value' terraform_outputs.json
     
     - name: Get Instance IP from Terraform Output
       id: instance_ip
