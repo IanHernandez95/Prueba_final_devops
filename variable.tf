@@ -1,3 +1,13 @@
+variable "organization" {
+  description = "value of the organization"
+  type        = string
+}
+
+variable "workspace" {
+  description = "value of the workspace"
+  type        = string
+}
+
 variable "cidr_block" {
   description = "value of the CIDR block"
   type        = string
@@ -5,20 +15,20 @@ variable "cidr_block" {
 
 variable "ami_id" {
   description = "value of the AMI ID"
-  type = string
+  type        = string
 }
 
 variable "instance_type" {
   description = "value of the instance type"
-  type = string  
+  type        = string
 }
 
 variable "key_name" {
   description = "value of the key name"
-  type = string
+  type        = string
 }
 
 variable "sns_email" {
   description = "value of the SNS email"
-  type = string  
+  type        = string
 }

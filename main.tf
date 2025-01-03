@@ -9,9 +9,9 @@ terraform {
 
 terraform {
   backend "remote" {
-    organization = "curso-devops-ihf"
+    organization = var.organization
     workspaces {
-      name = "ws-pruebafinal"
+      name = var.workspace
     }
   }
 }
@@ -30,11 +30,11 @@ module "vpc-sg" {
 }
 
 module "ec2" {
-  source = "./modules/ec2"
-  key_name = var.key_name
-  ami_id = var.ami_id
-  instance_type = var.instance_type
-  subnet_id = module.vpc-sg.public_subnets[0]
+  source             = "./modules/ec2"
+  key_name           = var.key_name
+  ami_id             = var.ami_id
+  instance_type      = var.instance_type
+  subnet_id          = module.vpc-sg.public_subnets[0]
   security_group_ids = [module.vpc-sg.security_group_id]
 }
 
@@ -43,7 +43,7 @@ module "aws_iam_role" {
 }
 
 module "sns" {
-  source = "./modules/sns"  
+  source         = "./modules/sns"
   email_endpoint = var.sns_email
 }
 
@@ -52,14 +52,14 @@ module "sqs" {
 }
 
 module "lambda" {
-  source = "./modules/lambda"
+  source        = "./modules/lambda"
   SNS_TOPIC_ARN = module.sns.sns_arn
-  sqs_arn = module.sqs.sqs_arn
-  rol_sqs_arn = module.aws_iam_role.iam_assumable_role_arn
+  sqs_arn       = module.sqs.sqs_arn
+  rol_sqs_arn   = module.aws_iam_role.iam_assumable_role_arn
 }
 
 module "cloudwatch" {
-  source = "./modules/cloudwatch"
-  EC2_id = module.ec2.InstanceId  
+  source  = "./modules/cloudwatch"
+  EC2_id  = module.ec2.InstanceId
   sns_arn = module.sns.sns_arn
 }

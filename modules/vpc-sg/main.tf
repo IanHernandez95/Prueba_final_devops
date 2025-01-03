@@ -21,9 +21,9 @@ module "vpc" {
 module "security_group" {
   source = "terraform-aws-modules/security-group/aws"
 
-  name = "prueba-final-sg"
+  name        = "prueba-final-sg"
   description = "Grupo de seguridad creado para la prueba final devops"
-  vpc_id = module.vpc.vpc_id
+  vpc_id      = module.vpc.vpc_id
 
   ingress_with_cidr_blocks = [
     {

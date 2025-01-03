@@ -1,7 +1,7 @@
 module "sns" {
   source = "terraform-aws-modules/sns/aws"
 
-  name = "prueba-final-sns"
+  name         = "prueba-final-sns"
   display_name = "prueba-final-sns"
 
   subscriptions = {
@@ -12,8 +12,8 @@ module "sns" {
   }
 
   tags = {
-    Terraform = "true"
+    Terraform   = "true"
     Environment = "dev"
   }
-  
+
 }

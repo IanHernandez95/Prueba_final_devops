@@ -1,5 +1,5 @@
 module "iam_assumable_role" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
+  source = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
 
   trusted_role_services = ["lambda.amazonaws.com"]
 
@@ -13,8 +13,7 @@ module "iam_assumable_role" {
     "arn:aws:iam::aws:policy/AmazonSNSFullAccess",
     "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
   ]
-  
+
   number_of_custom_role_policy_arns = 3
 
-  
 }
