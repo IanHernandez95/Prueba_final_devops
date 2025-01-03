@@ -47,7 +47,8 @@ jobs:
     
     - name: Terraform Outputs
       id: outputs
-      run: terraform output -raw InstanceIP | grep -oP '\d+\.\d+\.\d+\.\d+' > ec2_ip.txt
+      run: terraform output -raw InstanceIP | grep -oP '\d+\.\d+\.\d+\.\d+' | sort | uniq > ec2_ip.txt
+
 
     - name: Upload Terraform Outputs as Artifact
       uses: actions/upload-artifact@v3
