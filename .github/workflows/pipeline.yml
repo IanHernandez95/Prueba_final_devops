@@ -115,8 +115,8 @@ jobs:
       - name: Read EC2 IP from file
         id: read_ip
         run: |
-          echo "PUBLIC_IP=$(cat ec2_ip.txt)" >> $GITHUB_ENV
-          printenv
+          echo "PUBLIC_IP='$(cat ec2_ip.txt)'" >> $GITHUB_ENV
+          printenv PUBLIC_IP
       
       - name: Copy app to EC2
         run: |
