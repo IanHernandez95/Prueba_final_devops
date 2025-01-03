@@ -141,63 +141,63 @@ jobs:
         run: ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) "sudo docker run -d -p 3000:3000 api-pruebafinal:latest"
 
 
-  configurar-agent-cloudwatch:
-    needs: deploy-api-ec2
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up SSH key for EC2 access
-        run: |
-          echo "${{ secrets.SSH_SECRET_KEY }}" > private_key.pem
-          chmod 400 private_key.pem
-
-      - name: Download Terraform Outputs Artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: ec2_ip
-
-      - name: Install CloudWatch Agent on EC2 Instance
-        run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@$(cat ecp_ip.txt) << 'EOF'
-            sudo apt update && sudo apt upgrade -y
-            sudo apt install amazon-cloudwatch-agent -y
-          EOF
-
-      - name: Create CloudWatch Agent Configuration File
-        run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@$(cat ecp_ip.txt) << 'EOF'
-            echo '{
-              "metrics": {
-                "append_dimensions": {
-                  "InstanceId": "${aws:InstanceId}"
-                },
-                "metrics_collected": {
-                  "disk": [
-                    {
-                      "measurement": [
-                        "free",
-                        "used",
-                        "total",
-                        "used_percent"
-                      ],
-                      "resources": [
-                        "/"
-                      ]
-                    }
-                  ]
-                }
-              }
-            }' | sudo tee /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
-          EOF
-  
-      - name: Start CloudWatch Agent
-        run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@$(cat ecp_ip.txt) << 'EOF'
-            sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
-              -a start \
-              -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json \
-              -s
-          EOF
+#  configurar-agent-cloudwatch:
+#    needs: deploy-api-ec2
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: checkout repository
+#        uses: actions/checkout@v2
+#
+#      - name: Set up SSH key for EC2 access
+#        run: |
+#          echo "${{ secrets.SSH_SECRET_KEY }}" > private_key.pem
+#          chmod 400 private_key.pem
+#
+#      - name: Download Terraform Outputs Artifact
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: ec2_ip
+#
+#      - name: Install CloudWatch Agent on EC2 Instance
+#        run: |
+#          ssh -o StrictHostKeyChecking=no ubuntu@$(cat ecp_ip.txt) << 'EOF'
+#            sudo apt update && sudo apt upgrade -y
+#            sudo apt install amazon-cloudwatch-agent -y
+#          EOF
+#
+#      - name: Create CloudWatch Agent Configuration File
+#        run: |
+#          ssh -o StrictHostKeyChecking=no ubuntu@$(cat ecp_ip.txt) << 'EOF'
+#            echo '{
+#              "metrics": {
+#                "append_dimensions": {
+#                  "InstanceId": "${aws:InstanceId}"
+#                },
+#                "metrics_collected": {
+#                  "disk": [
+#                    {
+#                      "measurement": [
+#                        "free",
+#                        "used",
+#                        "total",
+#                        "used_percent"
+#                      ],
+#                      "resources": [
+#                        "/"
+#                      ]
+#                    }
+#                  ]
+#                }
+#              }
+#            }' | sudo tee /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+#          EOF
+#  
+#      - name: Start CloudWatch Agent
+#        run: |
+#          ssh -o StrictHostKeyChecking=no ubuntu@$(cat ecp_ip.txt) << 'EOF'
+#            sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
+#              -a start \
+#              -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json \
+#              -s
+#          EOF
