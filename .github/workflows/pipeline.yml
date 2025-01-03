@@ -94,55 +94,55 @@ jobs:
 #      - name: Push Docker image to Amazon ECR
 #        run: docker push ${{ secrets.AWS_USER_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/sitioweb-static:latest
 #
-  deploy-api-ec2:
-    needs:  terraform-build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: checkout repository
-        uses: actions/checkout@v2
-
-      - name: Docker build Local
-        run: docker build -f api/Dockerfile -t api-pruebafinal ./api
-
-      - name: Run Snyk to check Docker image
-        uses: snyk/actions/docker@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }} 
-        with:
-          image: api-pruebafinal:latest
-
-      - name: Docker save image
-        run: docker save -o api-pruebafinal.tar api-pruebafinal:latest
-
-      - name: Set up SSH key for EC2 access
-        run: |
-          echo "${{ secrets.SSH_SECRET_KEY }}" > private_key.pem
-          chmod 400 private_key.pem
-
-      - name: Download Terraform Outputs Artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: ec2_ip
-
-      - name: Docker load image
-        run: scp -i private_key.pem -o StrictHostKeyChecking=no api-pruebafinal.tar ubuntu@$(cat ec2_ip.txt):/home/ubuntu
-
-      - name: Docker installation
-        run: ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) "sudo apt-get update && sudo apt-get install -y docker.io"
-
-      - name: Docker start
-        run: ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) "sudo systemctl start docker && sudo systemctl enable docker"
-        
-      - name: Docker load image
-        run: ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) "sudo docker load -i api-pruebafinal.tar"
-
-      - name: Docker run puerto 3000
-        run: ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) "sudo docker run -d -p 3000:3000 api-pruebafinal:latest"
-
-
+#  deploy-api-ec2:
+#    needs:  terraform-build
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: checkout repository
+#        uses: actions/checkout@v2
+#
+#      - name: Docker build Local
+#        run: docker build -f api/Dockerfile -t api-pruebafinal ./api
+#
+#      - name: Run Snyk to check Docker image
+#        uses: snyk/actions/docker@master
+#        env:
+#          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }} 
+#        with:
+#          image: api-pruebafinal:latest
+#
+#      - name: Docker save image
+#        run: docker save -o api-pruebafinal.tar api-pruebafinal:latest
+#
+#      - name: Set up SSH key for EC2 access
+#        run: |
+#          echo "${{ secrets.SSH_SECRET_KEY }}" > private_key.pem
+#          chmod 400 private_key.pem
+#
+#      - name: Download Terraform Outputs Artifact
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: ec2_ip
+#
+#      - name: Docker load image
+#        run: scp -i private_key.pem -o StrictHostKeyChecking=no api-pruebafinal.tar ubuntu@$(cat ec2_ip.txt):/home/ubuntu
+#
+#      - name: Docker installation
+#        run: ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) "sudo apt-get update && sudo apt-get install -y docker.io"
+#
+#      - name: Docker start
+#        run: ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) "sudo systemctl start docker && sudo systemctl enable docker"
+#        
+#      - name: Docker load image
+#        run: ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) "sudo docker load -i api-pruebafinal.tar"
+#
+#      - name: Docker run puerto 3000
+#        run: ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) "sudo docker run -d -p 3000:3000 api-pruebafinal:latest"
+#
+#
   configurar-agent-cloudwatch:
-    needs: deploy-api-ec2
+#    needs: deploy-api-ec2
     runs-on: ubuntu-latest
 
     steps:
