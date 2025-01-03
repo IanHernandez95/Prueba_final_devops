@@ -48,7 +48,9 @@ jobs:
 
     - name: Export SSH public key to Terraform
       run: |
+        echo "" >> terraform.tfvars # Asegúrate de añadir una línea vacía al final
         echo 'public_key = "\"$(cat id_rsa.pub | tr -d '\n')\""' >> terraform.tfvars
+        
 
     - name: Terraform Setup
       uses: hashicorp/setup-terraform@v2
