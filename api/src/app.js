@@ -16,8 +16,9 @@ app.get('/api', async (req, res) => {
     }
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Servidor ejecutándose en el puerto ${PORT}`);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Servidor ejecutándose en el puerto ${PORT}`);
 });
 
 module.exports = app;
