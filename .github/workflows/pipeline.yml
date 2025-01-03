@@ -121,7 +121,7 @@ jobs:
       - name: Install Node.js and dependencies
         run: |
           ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) << 'EOF'
-            curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+            curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
             sudo apt-get install -y nodejs
             cd /home/ubuntu
             npm init -y
