@@ -168,38 +168,39 @@ jobs:
             sudo dpkg -i amazon-cloudwatch-agent.deb
           EOF
 
-      - name: Create CloudWatch Agent Configuration File
+      - name: Create CloudWatch agent config
         run: |
-          ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) << 'EOF'
-            echo '{
+          cat <<EOL > ~/cloudwatch-config.json
+          {
+              "agent": {
+                  "metrics_collection_interval": 60,
+                  "run_as_user": "root"
+              },
               "metrics": {
-                "append_dimensions": {
-                  "InstanceId": "${aws:InstanceId}"
-                },
-                "metrics_collected": {
-                  "disk": [
-                    {
-                      "measurement": [
-                        "free",
-                        "used",
-                        "total",
-                        "used_percent"
-                      ],
-                      "resources": [
-                        "/"
-                      ]
-                    }
-                  ]
-                }
+                  "metrics_collected": {
+                      "disk": {
+                          "measurement": ["used_percent"],
+                          "metrics_collection_interval": 60,
+                          "resources": ["/"]
+                      },
+                      "cpu": {
+                          "measurement": ["usage_idle"],
+                          "metrics_collection_interval": 60
+                      },
+                      "memory": {
+                          "measurement": ["mem_used_percent"],
+                          "metrics_collection_interval": 60
+                      }
+                  }
               }
-            }' | sudo tee /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
-          EOF
-  
-      - name: Start CloudWatch Agent
+          }
+          EOL
+
+      - name: Configure CloudWatch agent
         run: |
-          ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) << 'EOF'
-            sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
-              -a start \
-              -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json \
-              -s
-          EOF
+          sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-config-wizard -c file:/home/ubuntu/cloudwatch-config.json
+  
+      - name: Start CloudWatch agent
+        run: |
+          sudo systemctl start amazon-cloudwatch-agent
+          sudo systemctl enable amazon-cloudwatch-agent
