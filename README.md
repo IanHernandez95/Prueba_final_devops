@@ -37,9 +37,6 @@ Los requerimientos para completar la prueba son los siguientes
 ## Ejecución del Proyecto
 
 > [!IMPORTANT]  
-> Crucial information necessary for users to succeed.
-
-> [!IMPORTANT]  
 > Previo a la ejecucion del proyecto se debe hacer configuraciones previas - Leer atentamente para una ejecución correcta del codigo
 
 ### Configuración del Back-end Terraform
@@ -51,9 +48,12 @@ Se debe elegir la forma de manejar el backend de Terraform - Hay 2 opción en el
     Para utilizar el backend de terraform cloud se debe crear una cuenta en la pagina web de terraform cloud, una vez iniciada sesion se debe configurar una organización y dentro de esta un workspace.  
     En el Archivo main.tf de la carpeta raiz se debe cambiar el nombre de organizacion y workspace por los configurados en tu espacio de terraform cloud
     Para que este backend funcion se debe configurar dentro de la workspace las siguientes variables de entorno:
-      * AWS_ACCESS_KEY_ID - Con la key id del usuario a utilizar en aws <span style="color:yellow; font-weight:bold;">Importante marcarla como sensible/span>
-      * AWS_SECRET_ACCESS_KEY - Con la secret key del usuario a utilizar en aws <span style="color:yellow; font-weight:bold;">Importante marcarla como sensible/span>  
-    Importante realizarlo ya que sin estas variables el backend no funcionara
+      * AWS_ACCESS_KEY_ID - Con la key id del usuario a utilizar en aws 
+      * AWS_SECRET_ACCESS_KEY - Con la secret key del usuario a utilizar en aws 
+      > [!WARNING]  
+      > Se debe marcar las casilla como sensitiva ya que es información sensible  
+    > [!IMPORTANT]  
+    > Importante realizarlo ya que sin estas variables el backend no funcionara  
 
 2. Bucket S3 y tabla de Dynamo
 
