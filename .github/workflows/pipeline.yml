@@ -112,4 +112,4 @@ jobs:
           name: ec2_ip
 
       - name: Test Conection
-        run: ssh -i private_key.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@$(cat ec2_ip.txt) "echo 'Connection successful'"
+        run: ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) "echo 'Connection successful'"
