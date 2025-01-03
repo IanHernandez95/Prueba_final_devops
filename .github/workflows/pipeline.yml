@@ -168,37 +168,37 @@ jobs:
             sudo dpkg -i amazon-cloudwatch-agent.deb
           EOF
 
-      - name: Create CloudWatch agent config
-        run: |
-          cat <<EOL > ~/cloudwatch-config.json
-          {
-              "agent": {
-                  "metrics_collection_interval": 60,
-                  "run_as_user": "root"
-              },
-              "metrics": {
-                  "metrics_collected": {
-                      "disk": {
-                          "measurement": ["used_percent"],
-                          "metrics_collection_interval": 60,
-                          "resources": ["/"]
-                      },
-                      "cpu": {
-                          "measurement": ["usage_idle"],
-                          "metrics_collection_interval": 60
-                      },
-                      "memory": {
-                          "measurement": ["mem_used_percent"],
-                          "metrics_collection_interval": 60
-                      }
-                  }
-              }
-          }
-          EOL
+          - name: Create CloudWatch agent config
+          run: |
+            cat <<EOL > ~/cloudwatch-config.json
+            {
+                "agent": {
+                    "metrics_collection_interval": 60,
+                    "run_as_user": "root"
+                },
+                "metrics": {
+                    "metrics_collected": {
+                        "disk": {
+                            "measurement": ["used_percent"],
+                            "metrics_collection_interval": 60,
+                            "resources": ["/"]
+                        },
+                        "cpu": {
+                            "measurement": ["usage_idle"],
+                            "metrics_collection_interval": 60
+                        },
+                        "memory": {
+                            "measurement": ["mem_used_percent"],
+                            "metrics_collection_interval": 60
+                        }
+                    }
+                }
+            }
+            EOL
 
-      - name: Configure CloudWatch agent
+      - name: Configure and start CloudWatch agent
         run: |
-          sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-config-wizard -c file:/home/ubuntu/cloudwatch-config.json
+          sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a start -c file:/home/ubuntu/cloudwatch-config.json -s
   
       - name: Start CloudWatch agent
         run: |
