@@ -55,9 +55,6 @@ jobs:
         name: terraform-outputs
         path: terraform_outputs.json
 
-    - name: post json
-      run: cat terraform_outputs.json
-
 #
 #  docker-build:
 #    needs: terraform-build
@@ -96,24 +93,24 @@ jobs:
 #      - name: Push Docker image to Amazon ECR
 #        run: docker push ${{ secrets.AWS_USER_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/sitioweb-static:latest
 #
-#  deploy-api-ec2:
-#    needs:  terraform-build
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - name: checkout repository
-#        uses: actions/checkout@v2
-#
-#      - name: Set up SSH keys
-#        uses: webfactory/ssh-agent@v0.5.3
-#        with:
-#          ssh-private-key: ${{ secrets.SSH_SECRET_KEY }}
-#
-#      - name: Download EC2 IP artifact
-#        uses: actions/download-artifact@v3
-#        with:
-#          name: ec2_ip
-#
-#      - name: Leer la IP y probar conexión SSH
-#        run: |
-#          cat ec2_ip.txt
+  deploy-api-ec2:
+    needs:  terraform-build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up SSH keys
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_SECRET_KEY }}
+
+      - name: Download EC2 IP artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: terraform-outputs
+
+      - name: Leer la IP y probar conexión SSH
+        run: |
+          echo terraform_outputs.json
