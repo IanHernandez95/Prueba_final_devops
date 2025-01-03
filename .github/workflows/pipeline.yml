@@ -143,6 +143,7 @@ jobs:
 #
   configurar-agent-cloudwatch:
 #    needs: deploy-api-ec2
+    needs: terraform-build
     runs-on: ubuntu-latest
 
     steps:
