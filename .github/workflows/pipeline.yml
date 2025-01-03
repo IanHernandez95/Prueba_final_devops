@@ -112,14 +112,5 @@ jobs:
         with:
           name: ec2-ip
 
-      - name: Copy app to EC2
-        run: |
-          scp -o StrictHostKeyChecking=no -r api/src ubuntu@$(cat ec2_ip.txt):/home/ubuntu/app
-  
-      - name: SSH into EC2 and start the app
-        run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) << EOF
-            cd /home/ubuntu/app
-            npm install
-            nohup node app.js &
-          EOF
+      - name: Test SSH connection
+        run: ssh -vvv -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) "echo 'Connection successful'"
