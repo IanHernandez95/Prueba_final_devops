@@ -47,7 +47,7 @@ jobs:
     
     - name:  get_output
       run: |
-        terraform output -json InstanceIP > ec2_ip.txt
+        terraform output -json InstanceIP | cut -d'"' -f2 > ec2_ip.txt
     
     - name: Upload artifact
       uses: actions/upload-artifact@v3
