@@ -9,9 +9,9 @@ terraform {
 
 terraform {
   backend "remote" {
-    organization = var.organization
+    organization = "curso-devops-ihf" # Modifcar con tu nombre de organización
     workspaces {
-      name = var.workspace
+      name = "ws-pruebafinal" # Modificar con el nombre de tu workspace
     }
   }
 }

@@ -1,13 +1,3 @@
-variable "organization" {
-  description = "value of the organization"
-  type        = string
-}
-
-variable "workspace" {
-  description = "value of the workspace"
-  type        = string
-}
-
 variable "cidr_block" {
   description = "value of the CIDR block"
   type        = string
