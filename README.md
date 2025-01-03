@@ -92,3 +92,31 @@ Dentro el archivo .tfvars se deben modificar las siguientes variables para funci
 
 ### Expĺicación del flujo de trabajo
 
+La acción de Github se activa cada vez que se realiza un push en la rama main del repositorio (excepto cuando solo se modifica el README)  
+El Primera trabajo en ser ejecutado es el escaneo de Snyk al codigo Terraform  
+Una vez superado el escaneo de Snyk se ejecuta la configuración de terraform que construye toda la infraestructura
+esto incluye, constuir el backend en Terraform Cloud (o S3 segun elegido), instancia EC2, ECR, VPC, grupos de seguridad, SQS, SNS, Lambda y rol para lambda y los servicios necesarios para el correcto funcionamiento de la infraestructura.  
+Construida la infraestructura se divide el trabajo en 2 por una parte se construye la imagen docker que va a ir al ECR, se escanea con Snyk para buscar vulnerabilidades en la imagen y posteriormente se sube a repositorio ECR  
+Por otra parte se construye una imagen docker de la api que ira a la instancia EC2, se configura la conexción SSH y se sube la imagen en la instancia, correr el servidor para posteriormente acceder a travez de la IP publica de la instancia y el puerto 3000  
+
+> [!NOTE]
+> Para ejecutar el proyecto hacer los siguientes pasos}
+
+Clonar el repositorio
+```bash
+  git clone https://github.com/IanHernandez95/Prueba_final_devops.git
+```
+Acceder al directorio 
+```bash
+  cd directorio-repo-clonado
+```
+Remover el repositorio remoto original
+```bash
+  git remote remove origin
+```
+Crear un repositorio remoto en tu cuenta de github  
+
+Agregar origen remoto con el repositorio creado en tu cuenta github
+```bash
+  git remote add origin https://github.com/tu-usuario/tu-repo.git
+```
