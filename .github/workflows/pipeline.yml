@@ -111,14 +111,14 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ec2-ip
-          
+
       - name: Copy app to EC2
         run: |
-          scp -i /tmp/ssh-key -o StrictHostKeyChecking=no -r api/src ubuntu@$(cat ec2_ip.txt):/home/ubuntu/app
+          scp -o StrictHostKeyChecking=no -r api/src ubuntu@$(cat ec2_ip.txt):/home/ubuntu/app
   
       - name: SSH into EC2 and start the app
         run: |
-          ssh -i /tmp/ssh-key -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) << EOF
+          ssh -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) << EOF
             cd /home/ubuntu/app
             npm install
             nohup node app.js &
