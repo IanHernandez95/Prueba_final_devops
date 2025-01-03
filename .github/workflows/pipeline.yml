@@ -113,4 +113,4 @@ jobs:
 
       - name: Leer la IP y probar conexión SSH
         run: |
-          echo terraform_outputs.json
+          cat terraform_outputs.json
