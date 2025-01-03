@@ -115,12 +115,8 @@ jobs:
         with:
           name: ec2-ip
 
-
-      - name: Limpiar archivo ec2_ip.txt
+      - name: Leer la IP y probar conexión SSH
         run: |
-          sed -i 's/\s\+//g' ec2_ip.txt
-          echo "Contenido limpio de ec2_ip.txt:"
-          cat ec2_ip.txt
-
-      - name: Test SSH connection
-        run: ssh -vvv -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt)  "echo 'Connection successful'"
+          IP=$(cat ec2_ip.txt)
+          echo "Conectando a la IP: $IP"
+          ssh -vvv -o StrictHostKeyChecking=no ubuntu@$IP "echo 'Connection successful'"
