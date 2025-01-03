@@ -115,9 +115,6 @@ jobs:
       - name: Docker save image
         run: docker save -o api-pruebafinal.tar api-pruebafinal:latest
 
-      - name: Docker load image
-        run: scp -i private_key.pem -o StrictHostKeyChecking=no api-pruebafinal.tar ubuntu@$(cat ec2_ip.txt):/home/ubuntu
-
       - name: Set up SSH key for EC2 access
         run: |
           echo "${{ secrets.SSH_SECRET_KEY }}" > private_key.pem
@@ -128,8 +125,8 @@ jobs:
         with:
           name: ec2_ip
 
-      - name: Test Conection
-        run: ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) "echo 'Connection successful'"
+      - name: Docker load image
+        run: scp -i private_key.pem -o StrictHostKeyChecking=no api-pruebafinal.tar ubuntu@$(cat ec2_ip.txt):/home/ubuntu
 
       - name: Docker installation
         run: ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) "sudo apt-get update && sudo apt-get install -y docker.io"
