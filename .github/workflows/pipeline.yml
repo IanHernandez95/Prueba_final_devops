@@ -102,6 +102,22 @@ jobs:
       - name: checkout repository
         uses: actions/checkout@v2
 
+      - name: Docker build Local
+        run: docker build -f api/Dockerfile -t api-pruebafinal ./api
+
+      - name: Run Snyk to check Docker image
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }} 
+        with:
+          image: api-pruebafinal:latest
+
+      - name: Docker save image
+        run: docker save -o api-pruebafinal.tar api-pruebafinal:latest
+
+      - name: Docker load image
+        run: scp -i private_key.pem -o StrictHostKeyChecking=no api-pruebafinal.tar ubuntu@$(cat ec2_ip.txt):/home/ubuntu
+
       - name: Set up SSH key for EC2 access
         run: |
           echo "${{ secrets.SSH_SECRET_KEY }}" > private_key.pem
@@ -115,21 +131,14 @@ jobs:
       - name: Test Conection
         run: ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) "echo 'Connection successful'"
 
-      - name: Copy app.js to EC2
-        run: scp -i private_key.pem -o StrictHostKeyChecking=no api/src/app.js ubuntu@$(cat ec2_ip.txt):/home/ubuntu/app.js
-  
-      - name: Install Node.js and dependencies
-        run: |
-          ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) << 'EOF'
-            curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-            sudo apt-get install -y nodejs
-            cd /home/ubuntu
-            npm init -y
-            npm install express  # O cualquier otra dependencia que tu API necesite
-          EOF
-  
-      - name: Run API on EC2
-        run: |
-          ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) << 'EOF'
-            nohup node /home/ubuntu/app.js > /home/ubuntu/app.log 2>&1 &
-          EOF
+      - name: Docker installation
+        run: ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) "sudo apt-get update && sudo apt-get install -y docker.io"
+
+      - name: Docker start
+        run: ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) "sudo systemctl start docker && sudo systemctl enable docker"
+        
+      - name: Docker load image
+        run: ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) "docker load -i api-pruebafinal.tar"
+
+      - name: Docker run puerto 3000
+        run: ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) "docker run -d -p 3000:3000 api-pruebafinal:latest"
