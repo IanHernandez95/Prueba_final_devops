@@ -1,6 +1,9 @@
 # Imagen base de Node.js 22
 FROM node:22-alpine
 
+# Actualiza npm a la versión 11.0.0
+RUN npm install -g npm@11.0.0
+
 # Configurar el directorio de trabajo dentro del contenedor
 WORKDIR /app
 
