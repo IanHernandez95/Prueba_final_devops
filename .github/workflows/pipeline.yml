@@ -117,6 +117,4 @@ jobs:
 
       - name: Leer la IP y probar conexión SSH
         run: |
-          IP=$(cat ec2_ip.txt)
-          echo "Conectando a la IP: $IP"
-          ssh -vvv -o StrictHostKeyChecking=no ubuntu@3.90.49.120 "echo 'Connection successful'"
+          cat ec2_ip.txt
