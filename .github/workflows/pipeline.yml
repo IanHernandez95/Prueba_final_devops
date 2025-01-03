@@ -162,14 +162,14 @@ jobs:
 
       - name: Install CloudWatch Agent on EC2 Instance
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) << 'EOF'
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) << 'EOF'
             sudo apt update && sudo apt upgrade -y
             sudo apt install amazon-cloudwatch-agent -y
           EOF
 
       - name: Create CloudWatch Agent Configuration File
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) << 'EOF'
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) << 'EOF'
             echo '{
               "metrics": {
                 "append_dimensions": {
@@ -196,7 +196,7 @@ jobs:
   
       - name: Start CloudWatch Agent
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) << 'EOF'
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) << 'EOF'
             sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
               -a start \
               -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json \
