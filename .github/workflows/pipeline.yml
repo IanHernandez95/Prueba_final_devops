@@ -56,6 +56,9 @@ jobs:
       with:
         name: ec2-ip
         path: ec2_ip.txt
+    
+    - name: mostrar IP
+      run: cat ec2_ip.txt
 
   docker-build:
     needs: terraform-build
