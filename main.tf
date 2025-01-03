@@ -16,6 +16,17 @@ terraform {
   }
 }
 
+# terraform {
+#   backend "s3" {
+#     bucket = "curso-dev" # Modificar con el nombre de tu bucket
+#     key    = "terraform/curso-devops-ihf/terraform.tfstate" # Modificar con el nombre de tu archivo
+#     region = "us-east-1" # Modificar con tu región
+#     dynamodb_table = "db-terraform" # Modificar con el nombre de tu tabla
+#     encrypt = true
+#     profile = "ihf-terraform" # Modificar con el nombre de tu profile   
+#   }
+# }
+
 provider "aws" {
   region = "us-east-1"
 }
