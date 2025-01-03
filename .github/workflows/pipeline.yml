@@ -45,19 +45,17 @@ jobs:
     - name: Terraform Apply
       run: terraform apply -auto-approve
     
-    - name: Get EC2 IP address
-      id: ec2_ip
-      run: |
-        terraform output -raw InstanceIP 
-
-    - name: Upload EC2 IP as artifact
+    - id: get_output
+      run: echo "::set-output name=mi_output::$(terraform output -json InstanceIP)"
+    
+    - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
-        name: ec2-ip
-        path: ec2_ip.txt
+        name: terraform-output
+        path: ${{ steps.get_output.outputs.mi_output }}
     
     - name: mostrar IP
-      run: cat ec2_ip.txt
+      run: echo "::set-output name=mi_output::$(terraform output -json InstanceIP)"
 #
 #  docker-build:
 #    needs: terraform-build
