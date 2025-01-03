@@ -164,7 +164,8 @@ jobs:
         run: |
           ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) << 'EOF'
             sudo apt update && sudo apt upgrade -y
-            sudo apt-get install -y amazon-cloudwatch-agent
+            wget https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
+            sudo dpkg -i amazon-cloudwatch-agent.deb
           EOF
 
       - name: Create CloudWatch Agent Configuration File
