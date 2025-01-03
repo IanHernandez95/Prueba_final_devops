@@ -46,7 +46,7 @@ jobs:
       run: terraform apply -auto-approve
     
     - name:  get_output
-      run: echo "::set-output name=mi_output::$(terraform output -json InstanceIP)" > ec2_ip.txt
+      run: echo (terraform output -json InstanceIP) > ec2_ip.txt
     
     - name: Upload artifact
       uses: actions/upload-artifact@v3
