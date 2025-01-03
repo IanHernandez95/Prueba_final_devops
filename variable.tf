@@ -22,3 +22,9 @@ variable "sns_email" {
   description = "value of the SNS email"
   type = string  
 }
+
+variable "public_key" {
+  description = "value of the public key"
+  type = string
+  
+}
