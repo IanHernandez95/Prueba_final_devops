@@ -54,8 +54,8 @@ module "disk_space" {
   period = 180
   unit = "Percent"
 
-  namespace = "System/Linux"
-  metric_name = "DiskSpaceUtilization"
+  namespace = "GWAgent"
+  metric_name = "Disk_Used_Percent"
   statistic = "Maximum"
 
   dimensions = {

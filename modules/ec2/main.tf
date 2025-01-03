@@ -10,7 +10,25 @@ module "ec2" {
   vpc_security_group_ids = var.security_group_ids
   key_name = var.key_name
   associate_public_ip_address = true
-  
+
+  user_data =  <<-EOF
+              #!/bin/bash
+              apt-get update -y
+              apt-get install -y wget unzip
+              wget https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
+              dpkg -i amazon-cloudwatch-agent.deb
+              
+              cat <<EOT > /opt/aws/amazon-cloudwatch-agent/bin/config.json
+              {
+                "metrics": {
+                  "append_dimensions": {
+                    "InstanceId": "${module.ec2.id}"
+                  }
+                }
+              }
+              EOT
+              EOF
+
   tags = {
     Terraform = "true"
     Environment = "dev"
