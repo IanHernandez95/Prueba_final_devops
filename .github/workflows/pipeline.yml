@@ -112,8 +112,24 @@ jobs:
         with:
           name: ec2_ip
 
-      - name: Revisar IP
-        run: cat ec2_ip.txt
-
       - name: Test Conection
         run: ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) "echo 'Connection successful'"
+
+      - name: Copy app.js to EC2
+        run: scp -i private_key.pem -o StrictHostKeyChecking=no api/src/app.js ubuntu@$(cat ec2_ip.txt):/home/ubuntu/app.js
+  
+      - name: Install Node.js and dependencies
+        run: |
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) << 'EOF'
+            curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+            sudo apt-get install -y nodejs
+            cd /home/ubuntu
+            npm init -y
+            npm install express  # O cualquier otra dependencia que tu API necesite
+          EOF
+  
+      - name: Run API on EC2
+        run: |
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) << 'EOF'
+            nohup node /home/ubuntu/app.js > /home/ubuntu/app.log 2>&1 &
+          EOF

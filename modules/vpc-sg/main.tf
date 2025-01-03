@@ -46,6 +46,13 @@ module "security_group" {
       protocol    = "tcp"
       description = "HTTPS"
       cidr_blocks = "0.0.0.0/0"
+    },
+    {
+      from_port   = 3000
+      to_port     = 3000
+      protocol    = "tcp"
+      description = "API"
+      cidr_blocks = "0.0.0.0/0"
     }
   ]
 
