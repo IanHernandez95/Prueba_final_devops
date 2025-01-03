@@ -111,6 +111,5 @@ jobs:
         with:
           name: terraform-outputs
 
-      - name: Leer la IP y probar conexión SSH
-        run: |
-          cat terraform_outputs.json
+      - name: conectarse a la instancia
+        run: ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_SECRET_KEY }} ubuntu@$(cat terraform_outputs.json) 'echo "Conectado a la instancia"'
