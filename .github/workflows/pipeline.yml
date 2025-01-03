@@ -125,9 +125,6 @@ jobs:
         with:
           name: ec2_ip
 
-      - name: Docker load image
-        run: scp -i private_key.pem -o StrictHostKeyChecking=no api-pruebafinal.tar ubuntu@$(cat ec2_ip.txt):/home/ubuntu
-
       - name: Docker installation
         run: ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) "sudo apt-get update && sudo apt-get install -y docker.io"
 
@@ -135,7 +132,9 @@ jobs:
         run: ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) "sudo systemctl start docker && sudo systemctl enable docker"
         
       - name: Docker load image
-        run: ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) "docker load -i api-pruebafinal.tar"
+        run: 
+          scp -i private_key.pem -o StrictHostKeyChecking=no api-pruebafinal.tar ubuntu@$(cat ec2_ip.txt):/home/ubuntu
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) "docker load -i /home/ubuntu/api-pruebafinal.tar"
 
       - name: Docker run puerto 3000
         run: ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt) "docker run -d -p 3000:3000 api-pruebafinal:latest"
