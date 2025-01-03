@@ -122,9 +122,5 @@ jobs:
           echo "Contenido limpio de ec2_ip.txt:"
           cat ec2_ip.txt
 
-      - name: Cargar IP en variable
-        id: load_ip
-        run: echo "INSTANCE_IP=$(cat ec2_ip.txt)" >> $GITHUB_ENV
-
       - name: Test SSH connection
-        run: ssh -vvv -o StrictHostKeyChecking=no ubuntu@$INSTANCE_IP  "echo 'Connection successful'"
+        run: ssh -vvv -o StrictHostKeyChecking=no ubuntu@$(cat ec2_ip.txt)  "echo 'Connection successful'"
