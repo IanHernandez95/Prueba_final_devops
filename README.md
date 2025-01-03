@@ -51,7 +51,8 @@ Se debe elegir la forma de manejar el backend de Terraform - Hay 2 opción en el
       * AWS_ACCESS_KEY_ID - Con la key id del usuario a utilizar en aws 
       * AWS_SECRET_ACCESS_KEY - Con la secret key del usuario a utilizar en aws 
       > [!WARNING]  
-      > Se debe marcar las casilla como sensitiva ya que es información sensible  
+      > Se debe marcar las casilla como sensitiva ya que es información sensible 
+      
     > [!IMPORTANT]  
     > Importante realizarlo ya que sin estas variables el backend no funcionara  
 
