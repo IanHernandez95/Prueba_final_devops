@@ -42,27 +42,3 @@ module "cloudwatch_status_check_Failed" {
   alarm_actions = [var.sns_arn]
   
 }
-
-module "disk_space" {
-  source = "terraform-aws-modules/cloudwatch/aws//modules/metric-alarm"
-
-  alarm_name          = "Mas de 80% de uso de disco"
-  alarm_description = "Uso de disco mayor a un 80 porciento"
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  evaluation_periods = "1"
-  threshold = 80
-  period = 180
-  unit = "Percent"
-
-  namespace = "GWAgent"
-  metric_name = "Disk_Used_Percent"
-  statistic = "Maximum"
-
-  dimensions = {
-    InstanceId = var.EC2_id
-    Filesystem = "/"
-  }
-
-  alarm_actions = [var.sns_arn]
-
-}
