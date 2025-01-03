@@ -110,7 +110,7 @@ jobs:
       - name: Download EC2 IP artifact
         uses: actions/download-artifact@v3
         with:
-          name: ec2-ip
+          name: ec2_ip
 
       - name: Leer la IP y probar conexión SSH
         run: |
